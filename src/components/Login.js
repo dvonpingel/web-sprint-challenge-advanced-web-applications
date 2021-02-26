@@ -32,7 +32,9 @@ const Login = () => {
       <h1>
         Welcome to the Bubble App!
         <p>Build a login page here</p>
-        <form></form>
+        <form>
+          <input></input>
+        </form>
       </h1>
     </>
   );
