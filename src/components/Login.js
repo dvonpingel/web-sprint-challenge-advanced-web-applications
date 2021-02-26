@@ -1,39 +1,61 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouteMatch, useHistory } from "react-router-dom";
 
-const Login = () => {
+const initialValues = {
+  username: "",
+  password: "",
+};
+
+const Login = (props) => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
+  const [user, setUser] = useState(initialValues);
+  const { push } = useHistory();
 
-  useEffect(() => {
+  const handleChange = (e) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
     axios
-      .delete(`http://localhost:5000/api/colors/1`, {
-        headers: {
-          authorization:
-            "ahuBHejkJJiMDhmODZhZi0zaeLTQ4ZfeaseOGZgesai1jZWYgrTA07i73Gebhu98",
-        },
-      })
+      .post("http://localhost:5000/api/login", user)
       .then((res) => {
-        axios
-          .get(`http://localhost:5000/api/colors`, {
-            headers: {
-              authorization: "",
-            },
-          })
-          .then((res) => {
-            console.log(res);
-          });
-        console.log(res);
+        localStorage.setItem("token", JSON.stringify(res.data.payload));
+        push("/bubble");
+      })
+      .catch((err) => {
+        console.log(err);
       });
-  });
+  };
+
+  useEffect(() => {});
 
   return (
     <>
       <h1>
         Welcome to the Bubble App!
         <p>Build a login page here</p>
-        <form>
-          <input></input>
+        <form onSubmit={handleLogin}>
+          <input
+            type="text"
+            name="username"
+            value={user.username}
+            onChange={handleChange}
+            placeholder="Username.."
+          ></input>
+          <input
+            type="password"
+            name="password"
+            value={user.password}
+            onChange={handleChange}
+            placeholder="Password.."
+          ></input>
+          <button>Log In</button>
         </form>
       </h1>
     </>
